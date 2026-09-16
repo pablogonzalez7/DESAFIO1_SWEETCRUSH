@@ -1,10 +1,10 @@
 #ifndef JUEGO_H
 #define JUEGO_H
 
-class juego
-{
-public:
-    juego();
-};
+bool marcarFicha(unsigned char* marcas, int posicion);
 
-#endif // JUEGO_H
+int detectarCombinaciones(unsigned char* memoria,
+                          unsigned char* marcas,
+                          int filas, int columnas, int sobrantes);
+
+#endif

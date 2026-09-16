@@ -13,3 +13,11 @@ unsigned char leerFicha(unsigned char* puntero, int bit) {
 
     return (dosBytes >> (bit + 6)) & 7;
 }
+
+void avanzarBits(unsigned char*& puntero, int& bit, int cantidad) {
+
+    int posicion = (7 - bit) + cantidad;
+
+    puntero += posicion / 8;
+    bit = 7 - posicion % 8;
+}

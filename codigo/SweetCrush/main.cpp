@@ -3,6 +3,7 @@
 #include <ctime>
 #include "tablero.h"
 #include "interfaz.h"
+#include "juego.h"
 
 using namespace std;
 
@@ -35,6 +36,19 @@ int main() {
 
     // Liberar la reserva al terminar.
     delete[] tablero;
+
+    int bytesMarcas = (filas * columnas + 7) / 8;
+    unsigned char* marcas = new unsigned char[bytesMarcas];
+
+    int combinaciones = detectarCombinaciones(
+        tablero, marcas, filas, columnas, sobrantes
+        );
+
+    cout << "\nConteo de combinaciones: " << combinaciones << '\n';
+
+    // Aqui agregaremos la caida y el relleno usando las marcas.
+
+    delete[] marcas;
 
     return 0;
 }
