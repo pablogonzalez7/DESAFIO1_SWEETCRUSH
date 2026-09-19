@@ -24,6 +24,23 @@ void eliminarFicha(unsigned char* memoria, int filas, int columnas, int filaElim
     // En la fila 0, el índice lineal coincide con la columna.
     unsigned char nuevaFicha = rand() % 6;
 
-    escribirFicha(memoria, columnaEliminar,
-                  sobrantes, nuevaFicha);
+    escribirFicha(memoria, columnaEliminar, sobrantes, nuevaFicha);
 }
+
+void eliminarColumna(unsigned char* puntero,int filas, int columnas, int eliminarCol, int sobrantes){
+    int c=1, desplazamiento=1;
+    for(int f = (filas*columnas) + eliminarCol-1; f >= 0; f--){
+        if(c%columnas==0){
+            c++;
+            desplazamiento++;
+        }
+        else{
+            unsigned char Ficha = leerFicha(puntero,f,sobrantes);
+            escribirFicha(puntero, f+1, sobrantes, Ficha);
+            c++;
+        }
+
+    }
+}
+
+
