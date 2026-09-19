@@ -2,16 +2,21 @@
 #include <cstdlib>
 using namespace std;
 
-unsigned char* generarTablero(int filas, int columnas,
-                              int& bytes, int& sobrantes) {
+void calcularMem(int filas, int columnas, int& bytesNecesarios, int& sobrantes) {
+
+    int bits = filas * columnas * 3;
+
+    bytesNecesarios = (bits + 7) / 8;
+    sobrantes = bytesNecesarios * 8 - bits;
+}
+
+unsigned char* generarTablero(int filas, int columnas,int& bytesReservados, int& sobrantes) {
 
     int cantidadFichas = filas * columnas;
-    int bits = cantidadFichas * 3;
 
-    bytes = (bits + 7) / 8;
-    sobrantes = bytes * 8 - bits;
+    calcularMem(filas, columnas, bytesReservados, sobrantes);
 
-    unsigned char* memoria = new unsigned char[bytes]{};
+    unsigned char* memoria = new unsigned char[bytesReservados]{};
 
     int byte = 0;
     int bit = 7 - sobrantes;

@@ -9,10 +9,13 @@ using namespace std;
 
 int main() {
 
+    bool continuar=true;
+
     int filas = 0;
     int columnas = 0;
-    int bytes = 0;
+    int bytesReservados = 0;
     int sobrantes = 0;
+    int accion;
 
     cout << "Ingrese la cantidad de filas: ";
     cin >> filas;
@@ -27,28 +30,47 @@ int main() {
 
     srand(time(0));
 
-    // Esta llamada reserva la memoria y genera las fichas.
-    unsigned char* tablero =
-        generarTablero(filas, columnas, bytes, sobrantes);
+    unsigned char* tablero = generarTablero(filas,columnas,bytesReservados,sobrantes);
 
-    cout << "\nTablero inicial:\n";
     imprimirTablero(tablero, filas, columnas, sobrantes);
 
-    // Liberar la reserva al terminar.
-    delete[] tablero;
+    while(continuar){
 
-    int bytesMarcas = (filas * columnas + 7) / 8;
-    unsigned char* marcas = new unsigned char[bytesMarcas];
+    cout<<"1. Eliminar ficha"<<endl
+         <<"2. Eliminar fila"<<endl
+         <<"3. Agregar fila"<<endl
+         <<"4. Eliminar columna"<<endl
+         <<"5. Agregar columna"<<endl;
+    cin>>accion;
 
-    int combinaciones = detectarCombinaciones(
-        tablero, marcas, filas, columnas, sobrantes
-        );
+    switch (accion) {
+    case 1:
 
-    cout << "\nConteo de combinaciones: " << combinaciones << '\n';
+        int fila, columna;
+        cout<<"Los indices de filas y columnas inician desde cero"<<endl
+             <<"Fila: "<<endl;
+        cin>>fila;
+        cout<<"columna: "<<endl ;
+        cin>>columna;
 
-    // Aqui agregaremos la caida y el relleno usando las marcas.
+        eliminarFicha(tablero, filas, columnas, fila, columna, sobrantes);
 
-    delete[] marcas;
+        imprimirTablero(tablero, filas, columnas, sobrantes);
+
+
+        break;
+    default:
+        break;
+    }
+
+    char s;
+    cout<<"ingrese S si desea salir: ";
+    cin>>s;
+    if ((s == 's' || s == 'S')) {
+        continuar=false;
+    }
+
+    }
 
     return 0;
 }

@@ -1,23 +1,64 @@
 #include "bits.h"
 
-unsigned char leerFicha(unsigned char* puntero, int bit) {
-
-    // Los tres bits caben en el mismo byte.
-    if (bit >= 2) {
-        return (*puntero >> (bit - 2)) & 7;
-    }
-
-    // La ficha está repartida entre dos bytes.
-    unsigned int dosBytes = *puntero;
-    dosBytes = (dosBytes << 8) | *(puntero + 1);
-
-    return (dosBytes >> (bit + 6)) & 7;
+int byteficha(int indice,int sobrantes){
+    int posicionBit = indice * 3 + sobrantes;
+    return(posicionBit / 8);
 }
 
-void avanzarBits(unsigned char*& puntero, int& bit, int cantidad) {
+int bitficha(int indice, int sobrantes){
+    int posicionBit = indice * 3 + sobrantes;
+    return(7 - posicionBit % 8);
+}
 
-    int posicion = (7 - bit) + cantidad;
+unsigned char leerFicha(unsigned char* puntero, int posicionLineal, int sobrantes) {
 
-    puntero += posicion / 8;
-    bit = 7 - posicion % 8;
+
+    int byte = byteficha(posicionLineal, sobrantes);
+    int bit = bitficha( posicionLineal,sobrantes);
+
+    if (bit >= 2) {
+        return (puntero[byte] >> (bit - 2)) & 7;
+    }
+
+    unsigned char ficha;
+
+    if (bit == 1) {
+        ficha = (puntero[byte] & 3) << 1;
+        ficha |= puntero[byte + 1] >> 7;
+    }
+    else {
+        ficha = (puntero[byte] & 1) << 2;
+        ficha |= puntero[byte + 1] >> 6;
+    }
+
+    return ficha;
+}
+
+void escribirFicha(unsigned char* puntero, int posicionLineal, int sobrantes, unsigned char ficha) {
+
+    int posicionBit = posicionLineal * 3 + sobrantes;
+
+    int byte = posicionBit / 8;
+    int bit = 7 - posicionBit % 8;
+
+    if (bit >= 2) {
+        puntero[byte] &= ~(7 << (bit - 2));
+        puntero[byte] |= ficha << (bit - 2);
+    }
+    else if (bit == 1) {
+        // Dos bits en este byte y uno en el siguiente.
+        puntero[byte] &= ~3;
+        puntero[byte] |= ficha >> 1;
+
+        puntero[byte + 1] &= ~(1 << 7);
+        puntero[byte + 1] |= (ficha & 1) << 7;
+    }
+    else {
+        // Un bit en este byte y dos en el siguiente.
+        puntero[byte] &= ~1;
+        puntero[byte] |= ficha >> 2;
+
+        puntero[byte + 1] &= ~(3 << 6);
+        puntero[byte + 1] |= (ficha & 3) << 6;
+    }
 }
