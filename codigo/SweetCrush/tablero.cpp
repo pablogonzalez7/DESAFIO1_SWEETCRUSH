@@ -1,20 +1,25 @@
 #include "tablero.h"
+#include "bits.h"
 #include <cstdlib>
 using namespace std;
 
-void calcularMem(int filas, int columnas, int& bytesNecesarios, int& sobrantes) {
+void calcularMem(int filas, int columnas, int& bytesReservados, int& sobrantes) {
 
     int bits = filas * columnas * 3;
 
-    bytesNecesarios = (bits + 7) / 8;
-    sobrantes = bytesNecesarios * 8 - bits;
+    bytesReservados = (bits + 7) / 8;
+    sobrantes = bytesReservados * 8 - bits;
+}
+
+void calcularSobrantes(int bytesReservados, int filas, int columnas, int &sobrantes){
+    int bits = filas * columnas * 3;
+    int bitsReservados = bytesReservados*8;
+    sobrantes = bitsReservados-bits;
 }
 
 unsigned char* generarTablero(int filas, int columnas,int& bytesReservados, int& sobrantes) {
 
     int cantidadFichas = filas * columnas;
-
-    calcularMem(filas, columnas, bytesReservados, sobrantes);
 
     unsigned char* memoria = new unsigned char[bytesReservados]{};
 
@@ -44,4 +49,34 @@ unsigned char* generarTablero(int filas, int columnas,int& bytesReservados, int&
     }
 
     return memoria;
+}
+
+bool verificarRedimensionarFilas(int columnas, int bytesReservados, int sobrantes){
+    int bitsActivos= bytesReservados*8 - sobrantes;
+    int newBits=columnas*3;
+    return (bitsActivos+newBits>bytesReservados*8);
+}
+
+bool verificarRedimensionarColumnas(int filas, int bytesReservados, int sobrantes){
+    int bitsActivos= bytesReservados*8 - sobrantes;
+    int newBits = filas*3;
+    return (bitsActivos+newBits>bytesReservados*8);
+}
+
+bool reducirmemoria(int filas, int columnas, int bytesReservados){
+    return(filas*columnas*3<=bytesReservados);
+
+}
+
+void redimensionar(unsigned char* &tablero, int filas, int columnas, int& bytesReservados, int& sobrantes, int bytesNuevaReserva, int sobrantesNuevos){
+
+    unsigned char* nuevoTablero= new unsigned char[bytesNuevaReserva];
+    for(int c=0; c<filas*columnas; c++){
+        unsigned char ficha= leerFicha(tablero,c,sobrantes);
+        escribirFicha(nuevoTablero,c,sobrantesNuevos,ficha);
+    }
+    delete[] tablero;
+    tablero = nuevoTablero;
+    bytesReservados=bytesNuevaReserva;
+    sobrantes=sobrantesNuevos;
 }
