@@ -117,7 +117,7 @@ int main() {
             } while (columnaEliminar < 1 || columnaEliminar > columnas);
             eliminarColumna(tablero, filas, columnas, columnaEliminar, sobrantes);
             calcularSobrantes(bytesReservados, filas, columnas, sobrantes);
-            if(reducirmemoria( filas, columnas, bytesReservados)){
+            if(reducirmemoria(filas, columnas, bytesReservados)){
                 calcularMem(filas, columnas, bytesReservados, sobrantesNuevos);
                 redimensionar(tablero, filas, columnas, bytesReservados, sobrantes, bytesNuevaReserva, sobrantesNuevos);
             }

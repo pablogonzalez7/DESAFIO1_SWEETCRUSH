@@ -86,4 +86,18 @@ void eliminarFila(unsigned char* puntero, int &filas, int columnas, int filaElim
 
 }
 
+void agregarColumna(unsigned char* puntero,int filas, int &columnas, int columnaAgregar, int sobrantes){
+    int c=1;
+    int desplazamientos=1;
+
+    for(int f = ((filas-1)*columnas) + columnaAgregar-1; f >= 0; f--){
+        unsigned char Ficha = leerFicha(puntero,f,sobrantes);
+        escribirFicha(puntero, f+desplazamientos, sobrantes, Ficha);
+        c++;
+        if(c%columnas==0){
+            desplazamientos++;}
+    }columnas++;
+
+}
+
 
