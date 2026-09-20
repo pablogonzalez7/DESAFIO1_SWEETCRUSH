@@ -36,6 +36,7 @@ int main() {
 
     unsigned char* tablero = generarTablero(filas,columnas,bytesReservados,sobrantes);
 
+    cout<<endl;
     imprimirTablero(tablero, filas, columnas, sobrantes);
 
     while(continuar){
@@ -46,7 +47,8 @@ int main() {
          <<"4. Agregar columna"<<endl
          <<"5. Eliminar columna"<<endl
          <<"6. Salir"<<endl;
-    cin>>accion;
+        accion=leerEntero("ingresa accion(1-6): ");
+    cout<<endl;
 
     switch (accion) {
 
@@ -54,13 +56,13 @@ int main() {
     case 1:
 
         int fila, columna;
-        cout<<"Los indices de filas y columnas inician desde cero"<<endl
+        cout<<"Los indices de filas y columnas van de 1 a la cantidad"<<endl
              <<"Fila: ";
         cin>>fila;
         cout<<"columna: ";
         cin>>columna;
 
-        eliminarFicha(tablero, filas, columnas, fila, columna, sobrantes);
+        eliminarFicha(tablero, filas, columnas, fila-1, columna-1, sobrantes);
 
         cout<<endl;
         imprimirTablero(tablero, filas, columnas, sobrantes);
@@ -70,11 +72,23 @@ int main() {
 
     case 2:
 
-        filas++;
         if(verificarRedimensionarFilas(columnas, bytesReservados, sobrantes)){
-            calcularMem(filas, columnas, bytesReservados, sobrantes);
-
+            calcularMem(filas+1, columnas, bytesNuevaReserva, sobrantesNuevos);
+            redimensionar(tablero, filas, columnas, bytesReservados, sobrantes, bytesNuevaReserva, sobrantesNuevos);
         }
+        int filaAgregar;
+        do {
+            filaAgregar = leerEntero("Ingrese posicion de la nueva fila: ");
+
+            if (filaAgregar < 1 || filaAgregar > filas+1) {
+                cout << "Fila invalida. Debe estar entre 1 y " << filas+1 << endl;
+            }
+
+        } while (filaAgregar < 1 || filaAgregar > filas+1);
+        agregarFila(tablero,filas, columnas, filaAgregar-1, sobrantes);
+        cout<<endl;
+        imprimirTablero(tablero, filas, columnas, sobrantes);
+
         break;
 
 
@@ -94,12 +108,32 @@ int main() {
         if(reducirmemoria( filas, columnas, bytesReservados)){
             calcularMem(filas, columnas, bytesReservados, sobrantesNuevos);
             redimensionar(tablero, filas, columnas, bytesReservados, sobrantes, bytesNuevaReserva, sobrantesNuevos);
+
         }
+        cout<<endl;
         imprimirTablero(tablero, filas, columnas, sobrantes);
         break;
 
 
     case 4:
+
+        if(verificarRedimensionarColumnas(filas, bytesReservados, sobrantes)){
+            calcularMem(filas, columnas+1, bytesNuevaReserva, sobrantesNuevos);
+            redimensionar(tablero, filas, columnas, bytesReservados, sobrantes, bytesNuevaReserva, sobrantesNuevos);
+            }
+        int columnaAgregar;
+            do {
+                columnaAgregar = leerEntero("Ingrese posicion de la nueva columna: ");
+
+                if (columnaAgregar < 1 || columnaAgregar > columnas+1) {
+                    cout << "columna invalida. Debe estar entre 1 y " << columnas+1 << endl;
+                }
+
+            } while (columnaAgregar < 1 || columnaAgregar > columnas+1);
+        agregarColumna(tablero,filas, columnas, columnaAgregar-1, sobrantes);
+        cout<<endl;
+        imprimirTablero(tablero, filas, columnas, sobrantes);
+
         break;
 
 
@@ -121,6 +155,7 @@ int main() {
                 calcularMem(filas, columnas, bytesReservados, sobrantesNuevos);
                 redimensionar(tablero, filas, columnas, bytesReservados, sobrantes, bytesNuevaReserva, sobrantesNuevos);
             }
+            cout<<endl;
             imprimirTablero(tablero, filas, columnas, sobrantes);
             break;
 
@@ -129,6 +164,9 @@ int main() {
         continuar=false;
 
         break;
+
+    default:
+        cout<<"Invalido. Ingrese de 1 a 6: "<<endl;
     }
 
 

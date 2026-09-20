@@ -11,4 +11,6 @@ void eliminarFila(unsigned char* puntero, int &filas, int columnas, int filaElim
 
 void agregarColumna(unsigned char* puntero,int filas, int &columnas, int columnaAgregar, int sobrantes);
 
+void agregarFila(unsigned char* puntero,int &filas, int columnas, int filaAgregar, int sobrantes);
+
 #endif

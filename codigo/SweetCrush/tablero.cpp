@@ -64,7 +64,7 @@ bool verificarRedimensionarColumnas(int filas, int bytesReservados, int sobrante
 }
 
 bool reducirmemoria(int filas, int columnas, int bytesReservados){
-    return(filas*columnas*3<=bytesReservados);
+    return(filas*columnas*3<(bytesReservados*0.65));
 
 }
 
@@ -79,4 +79,22 @@ void redimensionar(unsigned char* &tablero, int filas, int columnas, int& bytesR
     tablero = nuevoTablero;
     bytesReservados=bytesNuevaReserva;
     sobrantes=sobrantesNuevos;
+}
+
+void marcarFicha(unsigned char* auxiliar,int indice, int sobrantesAux){
+
+    int posicionBit = indice + sobrantesAux;
+    int byte = posicionBit / 8;
+    int bit = 7 - posicionBit % 8;
+
+    auxiliar[byte] &= ~(1 << bit);
+}
+
+unsigned char fichaMarcada(unsigned char* auxiliar,int indice,int sobrantesAux){
+
+    int posicionBit = indice + sobrantesAux;
+    int byte = posicionBit / 8;
+    int bit = 7 - posicionBit % 8;
+
+    return (auxiliar[byte] >> bit) & 1;
 }

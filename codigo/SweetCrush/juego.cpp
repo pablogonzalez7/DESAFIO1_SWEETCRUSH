@@ -32,7 +32,7 @@ int leerEntero(const char mensaje[]) {
             return numero;
         }
 
-        cout << "Entrada invalida. Ingrese un numero entero.\n";
+        cout << "Entrada invalida. Ingrese un numero entero."<<endl<<endl;
     }
 }
 void eliminarFicha(unsigned char* memoria, int filas, int columnas, int filaEliminar, int columnaEliminar, int sobrantes) {
@@ -42,21 +42,14 @@ void eliminarFicha(unsigned char* memoria, int filas, int columnas, int filaElim
         return;
     }
 
-    // Bajar una posición cada ficha situada encima.
     for (int fila = filaEliminar; fila > 0; fila--) {
-
         int destino = fila * columnas + columnaEliminar;
         int origen = destino - columnas;
-
-        unsigned char ficha =
-            leerFicha(memoria, origen, sobrantes);
-
+        unsigned char ficha =leerFicha(memoria, origen, sobrantes);
         escribirFicha(memoria, destino, sobrantes, ficha);
     }
 
-    // En la fila 0, el índice lineal coincide con la columna.
     unsigned char nuevaFicha = rand() % 6;
-
     escribirFicha(memoria, columnaEliminar, sobrantes, nuevaFicha);
 }
 
@@ -82,22 +75,39 @@ void eliminarFila(unsigned char* puntero, int &filas, int columnas, int filaElim
     for(int f=((filaEliminar-1)*columnas)-1; f>=0; f--){
         unsigned char ficha = leerFicha(puntero,f,sobrantes);
         escribirFicha(puntero, f+columnas, sobrantes, ficha);
-    } filas--;
-
+    }filas--;
 }
 
 void agregarColumna(unsigned char* puntero,int filas, int &columnas, int columnaAgregar, int sobrantes){
     int c=1;
-    int desplazamientos=1;
+    int desplazamientos=filas;
 
-    for(int f = ((filas-1)*columnas) + columnaAgregar-1; f >= 0; f--){
+    for(int f =(filas*columnas)-1;f>=columnaAgregar; f--){
         unsigned char Ficha = leerFicha(puntero,f,sobrantes);
+        if (f==((filas-1)*columnas) +(columnaAgregar-1)){c=1; desplazamientos--;}
         escribirFicha(puntero, f+desplazamientos, sobrantes, Ficha);
-        c++;
         if(c%columnas==0){
-            desplazamientos++;}
+            desplazamientos--;}
+        c++;
     }columnas++;
+
+    for(int n=0; n<filas;n++){
+        int ind=(n*columnas)+columnaAgregar;
+        unsigned char ficha= rand() % 6;
+        escribirFicha(puntero,ind,sobrantes,ficha);
+    }
 
 }
 
+void agregarFila(unsigned char* puntero,int &filas, int columnas, int filaAgregar, int sobrantes){
+    for(int f=(filas*columnas)-1; f>= filaAgregar*columnas; f--){
+        unsigned char ficha=leerFicha(puntero, f, sobrantes);
+        escribirFicha(puntero,f+columnas,sobrantes, ficha);
+    }filas++;
+    for(int c=0; c<columnas; c++){
+        int ind = (filaAgregar*columnas)+c;
+        unsigned char ficha = rand() % 6;
+        escribirFicha(puntero, ind, sobrantes, ficha);
+    }
 
+}

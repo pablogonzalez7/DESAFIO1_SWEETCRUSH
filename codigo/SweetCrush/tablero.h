@@ -3,7 +3,7 @@
 
 void calcularMem(int filas, int columnas, int& bytesNecesarios, int& sobrantes);
 
-void calcularSobrantes(int bitsReservados, int filas, int columnas, int &sobrantes);
+void calcularSobrantes(int bytesReservados, int filas, int columnas, int &sobrantes);
 
 unsigned char* generarTablero(int filas, int columnas,int& bytesReservados, int& sobrantes);
 
@@ -14,5 +14,9 @@ bool verificarRedimensionarColumnas(int filas, int bytesReservados, int sobrante
 bool reducirmemoria(int filas, int columnas, int bytesReservados);
 
 void redimensionar(unsigned char* &tablero, int filas, int columnas, int& bytesReservados, int& sobrantes, int bytesNuevaReserva, int sobrantesNuevos);
+
+void marcarFicha(unsigned char* auxiliar,int indice, int sobrantesAux);
+
+unsigned char fichaMarcada(unsigned char* auxiliar,int indice,int sobrantesAux);
 
 #endif
