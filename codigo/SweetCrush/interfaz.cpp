@@ -77,6 +77,7 @@ void imprimirTableroBits(unsigned char* memoria, int filas, int columnas, int so
 
 void imprimirTableros(unsigned char* memoria, int filas, int columnas, int sobrantes){
     imprimirTableroBits(memoria, filas, columnas, sobrantes);
+    cout<<filas<<"x"<<columnas<<endl,
     imprimirTablero(memoria,filas,columnas, sobrantes);
 }
 
