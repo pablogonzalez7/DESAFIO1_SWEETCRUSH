@@ -64,13 +64,13 @@ bool verificarRedimensionarColumnas(int filas, int bytesReservados, int sobrante
 }
 
 bool reducirmemoria(int filas, int columnas, int bytesReservados){
-    return(filas*columnas*3<(bytesReservados*0.65));
+    return(filas*columnas*3<(bytesReservados*8*0.65));
 
 }
 
 void redimensionar(unsigned char* &tablero, int filas, int columnas, int& bytesReservados, int& sobrantes, int bytesNuevaReserva, int sobrantesNuevos){
 
-    unsigned char* nuevoTablero= new unsigned char[bytesNuevaReserva];
+    unsigned char* nuevoTablero= new unsigned char[bytesNuevaReserva]{};
     for(int c=0; c<filas*columnas; c++){
         unsigned char ficha= leerFicha(tablero,c,sobrantes);
         escribirFicha(nuevoTablero,c,sobrantesNuevos,ficha);

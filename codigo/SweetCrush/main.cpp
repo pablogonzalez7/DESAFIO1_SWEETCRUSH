@@ -116,7 +116,7 @@ int main() {
 
         calcularSobrantes(bytesReservados, filas, columnas, sobrantes);
         if(reducirmemoria( filas, columnas, bytesReservados)){
-            calcularMem(filas, columnas, bytesReservados, sobrantesNuevos);
+            calcularMem(filas, columnas, bytesNuevaReserva, sobrantesNuevos);
             redimensionar(tablero, filas, columnas, bytesReservados, sobrantes, bytesNuevaReserva, sobrantesNuevos);
         }
 
