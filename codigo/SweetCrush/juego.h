@@ -13,4 +13,12 @@ void agregarColumna(unsigned char* puntero,int filas, int &columnas, int columna
 
 void agregarFila(unsigned char* puntero,int &filas, int columnas, int filaAgregar, int sobrantes);
 
+void detectarCombinaciones(unsigned char* tablero, int filas, int columnas, int sobrantes, int& fichasEliminada, int& combinacionesDetectadas);
+
+void realizarCaidas(unsigned char* tablero,int filas,int columnas,int sobrantes,unsigned char* auxiliar,int sobrantesAuxiliar, int& fichasEliminadas);
+
+void resolverCascadas(unsigned char* tablero,int filas,int columnas,int sobrantes,int& fichasEliminadas,int& combinacionesDetectadas,int& cascadasActuales);
+
+void mostrarPuntuacion(int fichasEliminadas, int combinacionesDetectadas);
+
 #endif

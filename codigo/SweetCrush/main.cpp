@@ -11,24 +11,14 @@ int main() {
 
     bool continuar=true;
 
-    int filas = 0;
-    int columnas = 0;
-    int bytesReservados = 0;
-    int bytesNuevaReserva=0;
-    int sobrantes = 0;
-    int sobrantesNuevos=0;
-    int accion;
+    int filas = 0, columnas = 0, bytesReservados = 0, bytesNuevaReserva=0, sobrantes = 0, sobrantesNuevos=0, accion,
+        combinacionesDetectadas=0, fichasEliminadas=0, cascadasActuales = 0, eliminacionesUsuario=0;
 
-    cout << "Ingrese la cantidad de filas: ";
-    cin >> filas;
-
-    cout << "Ingrese la cantidad de columnas: ";
-    cin >> columnas;
-
-    if (filas <= 0 || columnas <= 0) {
-        cout << "Dimensiones invalidas.\n";
-        return 1;
-    }
+    do {filas = leerEntero("Ingrese la cantidad de filas: ");
+        columnas = leerEntero("Ingrese la cantidad de columnas: ");
+        if (filas <= 0 || columnas <= 0) {
+            cout << "Dimensiones invalidas. Ingrese valores mayores que cero.\n\n";}
+        }while (filas <= 0 || columnas <= 0);
 
     srand(time(0));
 
@@ -37,7 +27,11 @@ int main() {
     unsigned char* tablero = generarTablero(filas,columnas,bytesReservados,sobrantes);
 
     cout<<endl;
-    imprimirTablero(tablero, filas, columnas, sobrantes);
+    resolverCascadas(tablero,filas,columnas,sobrantes,fichasEliminadas,combinacionesDetectadas,cascadasActuales);
+    imprimirTableros(tablero,filas,columnas,sobrantes);
+    fichasEliminadas=0;
+    combinacionesDetectadas=0;
+    cout<<endl;
 
     while(continuar){
 
@@ -55,18 +49,34 @@ int main() {
 
     case 1:
 
+        if(filas <= 0 || columnas <= 0){
+            cout << "No hay fichas para eliminar." << endl;
+            break;
+        }
         int fila, columna;
-        cout<<"Los indices de filas y columnas van de 1 a la cantidad"<<endl
-             <<"Fila: ";
-        cin>>fila;
-        cout<<"columna: ";
-        cin>>columna;
+        cout << "Los indices de filas van de 1 a " << filas<< " y las columnas van de 1 a " << columnas << endl;
+        do{
+            fila = leerEntero("Fila: ");
+            if(fila < 1 || fila > filas){
+                cout << "Fila invalida. Debe estar entre 1 y "
+                     << filas << endl;}
+        }while(fila < 1 || fila > filas);
 
-        eliminarFicha(tablero, filas, columnas, fila-1, columna-1, sobrantes);
+        do{
+            columna = leerEntero("Columna: ");
+            if(columna < 1 || columna > columnas){
+                cout << "Columna invalida. Debe estar entre 1 y "<< columnas << endl;}
+        }while(columna < 1 || columna > columnas);
+        eliminarFicha(tablero, filas, columnas,fila-1, columna-1, sobrantes);
 
-        cout<<endl;
-        imprimirTablero(tablero, filas, columnas, sobrantes);
-        cout<<endl;
+        eliminacionesUsuario++;
+
+        tablerosYestado(
+            tablero, filas, columnas, sobrantes,
+            fichasEliminadas, combinacionesDetectadas,
+            cascadasActuales, eliminacionesUsuario
+            );
+
         break;
 
 
@@ -79,39 +89,38 @@ int main() {
         int filaAgregar;
         do {
             filaAgregar = leerEntero("Ingrese posicion de la nueva fila: ");
-
             if (filaAgregar < 1 || filaAgregar > filas+1) {
-                cout << "Fila invalida. Debe estar entre 1 y " << filas+1 << endl;
-            }
-
+                cout << "Fila invalida. Debe estar entre 1 y " << filas+1 << endl;}
         } while (filaAgregar < 1 || filaAgregar > filas+1);
+
         agregarFila(tablero,filas, columnas, filaAgregar-1, sobrantes);
-        cout<<endl;
-        imprimirTablero(tablero, filas, columnas, sobrantes);
+
+        tablerosYestado(tablero, filas, columnas, sobrantes, fichasEliminadas, combinacionesDetectadas, cascadasActuales, eliminacionesUsuario);
 
         break;
 
 
     case 3:
+
+        eliminacionesUsuario += columnas;
+
         if(columnas==0 || filas==0){cout<<"No hay filas para eliminar"<<endl; break;}
         int filaEliminar;
         do {
             filaEliminar = leerEntero("Ingrese numero de fila a eliminar: ");
-
             if (filaEliminar < 1 || filaEliminar > filas) {
-                cout << "Fila invalida. Debe estar entre 1 y " << filas << endl;
-            }
+                cout << "Fila invalida. Debe estar entre 1 y " << filas << endl;}
+        }while (filaEliminar < 1 || filaEliminar > filas);
 
-        } while (filaEliminar < 1 || filaEliminar > filas);
         eliminarFila(tablero , filas, columnas, filaEliminar, sobrantes);
+
         calcularSobrantes(bytesReservados, filas, columnas, sobrantes);
         if(reducirmemoria( filas, columnas, bytesReservados)){
             calcularMem(filas, columnas, bytesReservados, sobrantesNuevos);
             redimensionar(tablero, filas, columnas, bytesReservados, sobrantes, bytesNuevaReserva, sobrantesNuevos);
-
         }
-        cout<<endl;
-        imprimirTablero(tablero, filas, columnas, sobrantes);
+
+        tablerosYestado(tablero, filas, columnas, sobrantes, fichasEliminadas, combinacionesDetectadas, cascadasActuales, eliminacionesUsuario);
         break;
 
 
@@ -124,20 +133,20 @@ int main() {
         int columnaAgregar;
             do {
                 columnaAgregar = leerEntero("Ingrese posicion de la nueva columna: ");
-
                 if (columnaAgregar < 1 || columnaAgregar > columnas+1) {
-                    cout << "columna invalida. Debe estar entre 1 y " << columnas+1 << endl;
-                }
+                    cout << "columna invalida. Debe estar entre 1 y " << columnas+1 << endl;}
+            }while (columnaAgregar < 1 || columnaAgregar > columnas+1);
 
-            } while (columnaAgregar < 1 || columnaAgregar > columnas+1);
         agregarColumna(tablero,filas, columnas, columnaAgregar-1, sobrantes);
-        cout<<endl;
-        imprimirTablero(tablero, filas, columnas, sobrantes);
+
+        tablerosYestado(tablero, filas, columnas, sobrantes, fichasEliminadas, combinacionesDetectadas, cascadasActuales, eliminacionesUsuario);
 
         break;
 
 
     case 5:
+
+        eliminacionesUsuario += filas;
 
         if(columnas==0 || filas==0){cout<<"No hay columnas para eliminar"<<endl; break;}
             int columnaEliminar;
@@ -155,14 +164,12 @@ int main() {
                 calcularMem(filas, columnas, bytesReservados, sobrantesNuevos);
                 redimensionar(tablero, filas, columnas, bytesReservados, sobrantes, bytesNuevaReserva, sobrantesNuevos);
             }
-            cout<<endl;
-            imprimirTablero(tablero, filas, columnas, sobrantes);
+
+            tablerosYestado(tablero, filas, columnas, sobrantes, fichasEliminadas, combinacionesDetectadas, cascadasActuales, eliminacionesUsuario);
             break;
 
     case 6:
-
         continuar=false;
-
         break;
 
     default:
@@ -170,7 +177,7 @@ int main() {
     }
 
 
-    }
+    } delete[] tablero;
 
     return 0;
 }
